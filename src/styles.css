@@ -37,13 +37,20 @@ body {
   font-size: 30px;
 }
 
-.button {
+.button.btn-load-more {
   display: block;
   margin-left: auto;
   margin-right: auto;
   font-size: 30px;
 }
 
+.button.is-hidden {
+  display: none;
+}
+
+/* .button .is-visible {
+  visibility: visible;
+} */
 /* gallery */
 
 .gallery {

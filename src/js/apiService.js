@@ -16,12 +16,12 @@ export default class PicturesApiService {
         return fetch(url)
             .then(response => response.json())
             //только после того как запрос успешный увеличиваем page на 1
-            .then(data => {
-                console.log(data);
+            .then(({hits}) => {
+                console.log(hits);
                 // console.log(this.data);
                 this.page += 1;
                 //значение промиса
-                return data.hits;
+                return hits;
             })
     }
 

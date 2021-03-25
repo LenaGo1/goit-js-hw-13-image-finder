@@ -10,8 +10,6 @@ const refs = {
     gallery: document.querySelector('.gallery'),
 }
 
-let heightContainer;
-
 //делаем экземпляр класса
 const picturesApiService = new PicturesApiService();
 
@@ -29,34 +27,32 @@ function onSearch(e) {
 
     //при помощи сеттера в объект picturesApiService в его свойство searchQuey записали то что получаем из формы при сабмите формы 
     picturesApiService.query = e.currentTarget.elements.query.value.trim();
+
+    //не пропускаем пустой ввод
+    if (!picturesApiService.query) {
+        return;
+    }
     
     //сбрасываем параметр page до 1 при сабмите формы (при смене запроса)
     picturesApiService.resetPage();
     
-    picturesApiService.fetchCards().then(appendPicturesMarkup)
-        .then(() => {
-        heightContainer = refs.gallery.offsetHeight
-        })
+    picturesApiService.fetchCards()
+        .then(appendPicturesMarkup)
         .then(() => {
         refs.loadMoreBtn.classList.remove('is-hidden');
     })
-
-    // setTimeout(() => {
-    //     heightContainer = refs.gallery.offsetHeight
-    // }, 700);
-
-    // setTimeout(() => {
-    //     refs.loadMoreBtn.classList.remove('is-hidden');
-    // }, 700);
 
 }
     
 function onLoadMore() {
     
-    picturesApiService.fetchCards().then(appendPicturesMarkup)
-        .then(scrollDown);
-    
-    // setTimeout(scrollDown, 700)    
+    picturesApiService.fetchCards()
+        
+        .then((data) => {
+            const top = refs.gallery.offsetTop + refs.gallery.clientHeight;
+            appendPicturesMarkup(data);
+            window.scrollTo({top, behavior: 'smooth'})
+        })        
 }
 
 function appendPicturesMarkup(hits) {
@@ -64,18 +60,5 @@ function appendPicturesMarkup(hits) {
 }
 
 function clearGalleryContainer() {
-    refs.gallery.innerHTML = "";
-    
-}
-
-function scrollDown() {
-    const heidhtButtonLoadMore = document.querySelector('[data-action="load-more"]').offsetHeight;
-    
-    const difference = heightContainer + heidhtButtonLoadMore;
-    const scrollHeight = document.body.clientHeight - difference;
-    let scrollOptions = {
-        top: scrollHeight,
-        behavior: 'smooth'
-    }
-    window.scrollTo(scrollOptions);
+    refs.gallery.innerHTML = "";    
 }
